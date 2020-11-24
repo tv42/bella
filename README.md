@@ -1,6 +1,6 @@
 # Bella -- label printer software
 
-![bella.png](`bel   la`)
+![`bel   la`](bella.png)
 
 Bella renders text to graphics and prints it on a label maker using IPP/CUPS.
 
