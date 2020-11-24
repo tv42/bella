@@ -59,4 +59,6 @@ func TestText(t *testing.T) {
 	run("Hello, world", 42)
 	run(".", 64)
 	run("tiny", 10)
+	run("multi\nline", 64)
+	run("way\ntoo\nsmall\nto\nread", 64)
 }

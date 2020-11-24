@@ -19,7 +19,6 @@ lp -d label -o landscape bella.png
 - command-line printing
 - web interface, especially for mobile client use
 - submit print jobs via IPP?
-- multi-line labels
 - limit label maximum width (mm or inch), to e.g. fit on drawer front
 - maybe embed images?
 - maybe embed QR codes?

@@ -1,7 +1,6 @@
 package render
 
 import (
-	"errors"
 	"fmt"
 	"image"
 	"image/color"
@@ -113,10 +112,10 @@ func Text(text string, opts ...Option) (image.Image, error) {
 }
 
 func renderText(text string, cfg *config) (image.Image, error) {
-	if strings.Index(text, "\n") >= 0 {
-		return nil, errors.New("multi-line text not supported yet") // TODO
-	}
-	face, err := binsearch(cfg.maxHeight, cfg.fontFn)
+	const debugConstraintMaxHeight = true
+
+	lines := strings.Split(text, "\n")
+	face, err := binsearch(len(lines), cfg.maxHeight, cfg.fontFn)
 	if err != nil {
 		return nil, err
 	}
@@ -131,14 +130,29 @@ func renderText(text string, cfg *config) (image.Image, error) {
 		// coordinates.
 		Dot: fixed.Point26_6{X: 0, Y: face.Metrics().Ascent},
 	}
-	bounds, _ := d.BoundString(text)
-	if bounds.Max.Y.Ceil() > cfg.maxHeight {
-		return nil, fmt.Errorf("bounds spilled: %v..%v", bounds.Min, bounds.Max)
+	var maxWidth int
+	for _, line := range lines {
+		bounds, _ := d.BoundString(line)
+		if bounds.Max.X.Ceil() > maxWidth {
+			maxWidth = bounds.Max.X.Ceil()
+		}
 	}
-	d.Dst = cfg.imageFn(image.Rect(0, 0, bounds.Max.X.Ceil(), cfg.maxHeight))
+	d.Dst = cfg.imageFn(image.Rect(0, 0, maxWidth, cfg.maxHeight))
 
 	// it starts out as all black, set a better background
 	draw.Draw(d.Dst, d.Dst.Bounds(), image.NewUniform(color.White), image.Point{}, draw.Src)
-	d.DrawString(text)
+	for _, line := range lines {
+
+		if debugConstraintMaxHeight {
+			bounds, _ := d.BoundString(line)
+			if bounds.Max.Y.Ceil() > cfg.maxHeight {
+				return nil, fmt.Errorf("bounds spilled: %v..%v", bounds.Min, bounds.Max)
+			}
+		}
+
+		d.DrawString(line)
+		d.Dot.X = 0
+		d.Dot.Y = d.Dot.Y + face.Metrics().Height
+	}
 	return d.Dst, nil
 }

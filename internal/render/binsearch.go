@@ -6,9 +6,10 @@ import (
 	"sort"
 
 	"golang.org/x/image/font"
+	"golang.org/x/image/math/fixed"
 )
 
-func binsearch(maxHeight int, fontFn FontFunc) (font.Face, error) {
+func binsearch(lines int, maxHeight int, fontFn FontFunc) (font.Face, error) {
 	const debug = false
 	// One inch tall text, 2.54cm, should definitely be more than your
 	// label maker tape is wide.
@@ -42,7 +43,9 @@ func binsearch(maxHeight int, fontFn FontFunc) (font.Face, error) {
 		// As per
 		// https://developer.apple.com/library/archive/documentation/TextFonts/Conceptual/CocoaTextArchitecture/Art/glyph_metrics_2x.png
 		// (via https://godoc.org/golang.org/x/image/font#Metrics),
-		height := (metrics.Ascent + metrics.Descent).Ceil()
+		height := (metrics.Ascent +
+			metrics.Height.Mul(fixed.I(lines-1)) +
+			metrics.Descent).Ceil()
 		face.Close()
 
 		if height > maxHeight {
