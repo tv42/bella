@@ -95,7 +95,7 @@ You can configure the Dymo LabelManager PnP to pause after each label, to leave 
 ### Random related things, not endorsing just cataloging
 
 - https://www.linux-magazine.com/Issues/2016/183/Perl-Producing-Labels
-- The HID device and UBS mode switch stuff seems to be handled fine by `printer-driver-dymo` these days, you no longer need the reverse-engineered `dymoprint`:
+- The HID device and USB mode switch stuff seems to be handled fine by `printer-driver-dymo` these days, you no longer need the reverse-engineered `dymoprint`:
   https://sbronner.com/dymoprint.html
   https://github.com/computerlyrik/dymoprint
   https://randomfoo.net/2018/07/09/printing-with-a-dymo-labelmanager-pnp-on-linux
